@@ -36,11 +36,44 @@ const Gallery = ({ users }: GalleryProps) => {
     setIsModalOpen(false);
   };
 
+
+  /**
+   * Sorts the users list based on the provided sort field and direction.
+   *
+   * @param {Object} value - An object containing the sort field and direction.
+   * @param {string} value.field - The field to sort by.
+   * @param {string} value.direction - The direction of the sort ("ascending" or "descending")
+   */
+  const handleSortInput = (value:{field: string,direction: string}) => {
+    if(value) {
+      setUsersList((prevUsersList) => {
+        return [...prevUsersList].sort((userA, userB) => {
+          if(value.field === "name") {
+            return value.direction === "ascending"
+              ? userA.name.localeCompare(userB.name)
+              : userB.name.localeCompare(userA.name);
+          }
+          if(value.field === "company") {
+            return value.direction === "ascending"
+              ? userA.company.name.localeCompare(userB.company.name)
+              : userB.company.name.localeCompare(userA.company.name);
+          }
+          if(value.field === "email") {
+            return value.direction === "ascending"
+              ? userA.email.localeCompare(userB.email)
+              : userB.email.localeCompare(userA.email);
+          }
+          return 0;
+        });
+      });
+    }
+  }
+
   return (
     <div className="user-gallery">
       <div className="heading">
         <h1 className="title">Users</h1>
-        <Controls />
+        <Controls onSortInput={handleSortInput} />
       </div>
       <div className="items">
         {usersList.map((user, index) => (
